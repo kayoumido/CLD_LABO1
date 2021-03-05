@@ -35,23 +35,49 @@ PING 172.31.16.126 (172.31.16.126) 56(84) bytes of data.
 
 # Second one with the public address
 # Doesn't work by default beacuse we didn't open the ICMP port
-$ ping 54.237.229.52
-PING 54.237.229.52 (54.237.229.52) 56(84) bytes of data.
+$ ping ec2-34-195-212-177.compute-1.amazonaws.com
+PING ec2-34-195-212-177.comput
 
 # After opening ICMP port (added in security group add screen), ping is successful
-$ ping 54.237.229.52
-64 bytes from 54.237.229.52: icmp_seq=71 ttl=46 time=90.1 ms
-64 bytes from 54.237.229.52: icmp_seq=72 ttl=46 time=91.1 ms
-64 bytes from 54.237.229.52: icmp_seq=73 ttl=46 time=99.0 ms
-64 bytes from 54.237.229.52: icmp_seq=74 ttl=46 time=94.5 ms
-64 bytes from 54.237.229.52: icmp_seq=75 ttl=46 time=90.3 ms
+$ ping ec2-34-195-212-177.compute-1.amazonaws.com
+PING ec2-34-195-212-177.compute-1.amazonaws.com (34.195.212.177) 56(84) bytes of data.
+64 bytes from ec2-34-195-212-177.compute-1.amazonaws.com (34.195.212.177): icmp_seq=1 ttl=44 time=99.7 ms
+64 bytes from ec2-34-195-212-177.compute-1.amazonaws.com (34.195.212.177): icmp_seq=2 ttl=44 time=90.5 ms
+64 bytes from ec2-34-195-212-177.compute-1.amazonaws.com (34.195.212.177): icmp_seq=3 ttl=44 time=90.4 ms
+64 bytes from ec2-34-195-212-177.compute-1.amazonaws.com (34.195.212.177): icmp_seq=4 ttl=44 time=90.4 ms
+64 bytes from ec2-34-195-212-177.compute-1.amazonaws.com (34.195.212.177): icmp_seq=5 ttl=44 time=95.4 ms
+64 bytes from ec2-34-195-212-177.compute-1.amazonaws.com (34.195.212.177): icmp_seq=6 ttl=44 time=93.4 ms
 ```
 
 > Determine the IP address seen by the operating system in the EC2 instance by running the ifconfig command. What type of address is it? Compare it to the address displayed by the ping command earlier. How do you explain that you can successfully communicate with the machine?
 
-The ip address displayed with `ifconfig` is the private address and the one we've used above is the public one. We imagine that there some sort of magic in the background that maps the public address with the private one
+When doing an `ifconfig` on the system, we see that it's IP address corresponds to the private one we see in the AWS administration panel.
 
-**^FIXME**
+```bash
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9001
+        inet 172.31.16.126  netmask 255.255.240.0  broadcast 172.31.31.255
+        inet6 fe80::87b:f4ff:fe41:d259  prefixlen 64  scopeid 0x20<link>
+        ether 0a:7b:f4:41:d2:59  txqueuelen 1000  (Ethernet)
+        RX packets 417  bytes 53971 (53.9 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 540  bytes 65610 (65.6 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 132  bytes 10438 (10.4 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 132  bytes 10438 (10.4 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+![](img/02.aws_panel_privateIP.png)
+
+But when we do a ping using the public IPv4 DNS, corresponds to the public IP.
+
+We imagine that AWS maps the public and private addresses which allows us to use the public IP to communicate with the machine.
 
 ## Task 3: Install a web application
 
